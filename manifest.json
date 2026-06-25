@@ -1,0 +1,17 @@
+{
+  "name": "中途採用（契約職員）査定システム｜慶生会",
+  "short_name": "契約職員査定",
+  "description": "令和8年度 中途採用・契約職員の月給査定ツール",
+  "start_url": "/contract-salary/",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#1a5276",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
