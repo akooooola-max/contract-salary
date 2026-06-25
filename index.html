@@ -121,6 +121,17 @@
       margin-top: 10px;
     }
 
+    .note-box {
+      background: #fef5e7;
+      border: 1px solid #f8d486;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.83rem;
+      color: #9c6a00;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
     .btn {
       display: block;
       width: 100%;
@@ -214,7 +225,7 @@
 
   <header>
     <h1>令和8年度 中途採用（契約職員）査定システム</h1>
-    <p>社会福祉法人 慶生会｜中途採用・契約職員 月給査定</p>
+    <p>社会福祉法人 慶生会｜既卒契約職員 月給査定</p>
   </header>
 
   <!-- ① 基本情報 -->
@@ -226,26 +237,28 @@
       <select id="jobType" onchange="onJobChange()">
         <option value="">選択してください</option>
         <optgroup label="直接処遇">
-          <option value="direct_nyusho">入所支援（191,100円）</option>
-          <option value="direct_tusho">日中支援（185,900円）</option>
-          <option value="direct_jido">児童（185,900円）</option>
-          <option value="junkangofu">准看護師（192,500円）</option>
-          <option value="kangofu">看護師（205,000円）</option>
-          <option value="rehab">リハビリ職・PT・OT・ST（200,000円）</option>
-          <option value="caremanager">介護支援専門員・ケアマネ（220,000円）</option>
-          <option value="service_manager">サービス管理責任者（228,000円）</option>
-          <option value="childdev_manager">児童発達支援管理責任者（230,000円）</option>
-          <option value="soudan_specialist">相談支援専門員（200,000円）</option>
-          <option value="soudan_general">相談支援（181,400円）</option>
+          <option value="nyusho">入所支援（184,400円）</option>
+          <option value="nicchu">日中支援（179,800円）</option>
+          <option value="jido">児童（179,800円）</option>
+          <option value="driver">運転手（171,200円）</option>
+          <option value="junkangofu_q">准看護師・有資格（192,200円）</option>
+          <option value="junkangofu_nq">准看護師・資格なし（187,200円）</option>
+          <option value="kango_rehab">看護師・リハビリ職（197,200円〜220,000円）</option>
+          <option value="shika">歯科衛生士（197,200円）</option>
+          <option value="bldg">ビルメンテナンス（178,800円〜195,000円）</option>
+          <option value="onsen">温泉（176,200円）</option>
         </optgroup>
         <optgroup label="間接処遇">
-          <option value="career">キャリア職（225,000円）</option>
-          <option value="jimu_general">一般事務（181,400円）</option>
-          <option value="jimu_keiri">経理事務（187,200円）</option>
-          <option value="kanrieiyoshi">管理栄養士（181,400円）</option>
-          <option value="eiyoshi">栄養士（181,400円）</option>
+          <option value="jimu">一般・経理事務（176,200円）</option>
+          <option value="eiyoshi">栄養士（176,200円）</option>
+          <option value="soudan">相談支援（176,200円）</option>
+        </optgroup>
+        <optgroup label="夜勤専従（手当込みの基礎額）">
+          <option value="yakin_kaigo">夜勤専従・介護（280,000円）</option>
+          <option value="yakin_bldg">夜勤専従・ビル（260,000円）</option>
         </optgroup>
       </select>
+      <div class="info-box" id="job-note" style="display:none;"></div>
     </div>
 
     <div class="form-group">
@@ -254,48 +267,37 @@
     </div>
 
     <div class="form-group">
-      <label for="totalExpYears">福祉業界 通算経験年数（10年以上加算ボーナス判定に使用）</label>
+      <label for="totalExpYears">福祉業界 通算経験年数（10年以上で加算）</label>
       <input type="number" id="totalExpYears" min="0" max="40" value="0" placeholder="0">
     </div>
   </div>
 
   <!-- ② 経験の詳細 -->
   <div class="card">
-    <h2>② 経験の詳細</h2>
-
-    <div class="form-group">
-      <label>経験加算単価（年あたり）</label>
-      <div class="checkboxes" style="grid-template-columns: 1fr 1fr;">
-        <label class="checkbox-item">
-          <input type="radio" name="expRate" value="1000" checked style="width:16px;height:16px;margin-top:2px;flex-shrink:0;accent-color:#2980b9;">
-          <span>1,000円 / 年</span>
-        </label>
-        <label class="checkbox-item">
-          <input type="radio" name="expRate" value="2000" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;accent-color:#2980b9;">
-          <span>2,000円 / 年</span>
-        </label>
-      </div>
-    </div>
+    <h2>② 経験の詳細（年加算金額の積み上げ）</h2>
+    <p style="font-size:0.82rem; color:#888; margin-bottom:12px;">基本 1,000円/年 を起点に、該当項目を加算（上限 2,500円/年）。年加算金額 × 同種経験年数（上限10年）で算出します。</p>
 
     <div class="checkboxes">
       <label class="checkbox-item">
-        <input type="checkbox" id="exp_hospital">
-        <span>介護・医療系（病院・保育・医療事務・相談）の経験あり<span class="amount">月+100円 × 経験年数</span></span>
+        <input type="checkbox" id="exp_kaigo">
+        <span>介護分野の経験あり<span class="amount">+100円 / 年</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" id="exp_shogai">
-        <span>障がい・発達支援（相談）の経験あり<span class="amount">月+100円 × 経験年数</span></span>
+        <span>障がい分野の経験あり<span class="amount">+100円 / 年</span></span>
       </label>
     </div>
+
+    <div class="info-box" style="margin-top:12px;">介護職で通算経験10年以上の場合、自動で +300円/年 を加算します。</div>
+
     <div class="form-group" style="margin-top: 16px;">
-      <label for="leaderBonus">リーダー経験 / 大規模法人経験</label>
+      <label for="leaderBonus">内外でのリーダー経験</label>
       <select id="leaderBonus">
-        <option value="0">なし（0円）</option>
-        <option value="300">リーダー経験あり（+300円）</option>
-        <option value="500">中規模法人リーダー（+500円）</option>
-        <option value="1000">300名以上・一部上場企業等（+1,000円）</option>
+        <option value="0">なし（0円/年）</option>
+        <option value="300">リーダー経験あり（+300円/年）</option>
+        <option value="500">中規模法人リーダー（+500円/年）</option>
+        <option value="1000">300名以上・一部上場企業等（+1,000円/年）</option>
       </select>
-      <div class="info-box">看護・リハビリ職の上限は700円です</div>
     </div>
   </div>
 
@@ -307,11 +309,11 @@
       <!-- 10,000円 -->
       <label class="checkbox-item">
         <input type="checkbox" data-qual="10000">
-        <span>介護福祉士<span class="amount">月+10,000円</span></span>
+        <span>社会福祉士<span class="amount">月+10,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="10000">
-        <span>社会福祉士<span class="amount">月+10,000円</span></span>
+        <span>介護福祉士<span class="amount">月+10,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="10000">
@@ -319,40 +321,32 @@
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="10000">
-        <span>臨床心理士・公認心理士<span class="amount">月+10,000円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="10000">
-        <span>准看護師（介護・児童・相談業務）<span class="amount">月+10,000円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="10000">
         <span>保育士<span class="amount">月+10,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="10000">
-        <span>社会保険労務士<span class="amount">月+10,000円</span></span>
+        <span>管理栄養士<span class="amount">月+10,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="10000">
-        <span>日商簿記1級<span class="amount">月+10,000円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="10000">
-        <span>酒類販売・危険物取扱認定<span class="amount">月+10,000円</span></span>
+        <span>准看護師（介護業務）<span class="amount">月+10,000円</span></span>
       </label>
       <!-- 5,000円 -->
       <label class="checkbox-item">
         <input type="checkbox" data-qual="5000">
-        <span>正看護師<span class="amount">月+5,000円</span></span>
+        <span>看護師免許<span class="amount">月+5,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="5000">
-        <span>PT・OT・ST・歯科衛生士<span class="amount">月+5,000円</span></span>
+        <span>歯科衛生士免許<span class="amount">月+5,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="5000">
-        <span>ケアマネジャー<span class="amount">月+5,000円</span></span>
+        <span>PT・OT・ST免許<span class="amount">月+5,000円</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="5000">
+        <span>実務者研修<span class="amount">月+5,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="5000">
@@ -360,54 +354,20 @@
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="5000">
-        <span>実務者研修（ヘルパー1級）<span class="amount">月+5,000円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="5000">
-        <span>栄養士<span class="amount">月+5,000円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="5000">
-        <span>管理栄養士（特養以外）<span class="amount">月+5,000円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="10000">
-        <span>管理栄養士（特養勤務）<span class="amount">月+10,000円</span></span>
+        <span>日商簿記2級<span class="amount">月+5,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="5000">
         <span>衛生管理者<span class="amount">月+5,000円</span></span>
       </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="5000">
-        <span>日商簿記2級<span class="amount">月+5,000円</span></span>
-      </label>
       <!-- 3,000円 -->
       <label class="checkbox-item">
         <input type="checkbox" data-qual="3000">
-        <span>初任者研修（ヘルパー2級）<span class="amount">月+3,000円</span></span>
+        <span>初任者研修<span class="amount">月+3,000円</span></span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" data-qual="3000">
         <span>児童指導員任用資格<span class="amount">月+3,000円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="3000">
-        <span>准看護師（看護業務従事）<span class="amount">月+3,000円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="3000">
-        <span>喀痰吸引等研修（対象5人以上）<span class="amount">月+3,000円</span></span>
-      </label>
-      <!-- 2,500円 -->
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="2500">
-        <span>ユニットリーダー<span class="amount">月+2,500円</span></span>
-      </label>
-      <!-- 1,500円 -->
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="1500">
-        <span>喀痰吸引等研修（対象5人未満）<span class="amount">月+1,500円</span></span>
       </label>
     </div>
   </div>
@@ -428,19 +388,16 @@
       </select>
     </div>
 
-    <div id="sougei-section" class="form-group hidden">
+    <div id="sougei-section" class="form-group">
       <label for="sougei">送迎・業務手当（通所事業所）</label>
       <select id="sougei">
         <option value="0">0円（なし）</option>
-        <option value="3000">3,000円</option>
-        <option value="5000">5,000円</option>
-        <option value="7000">7,000円</option>
-        <option value="10000">10,000円（上限）</option>
+        <option value="10000">10,000円</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label>住居手当</label>
+      <label>住居手当（規定に準ずる）</label>
       <label class="checkbox-item" style="display:flex;">
         <input type="checkbox" id="jukyo_flag">
         <span>支給予定あり（α円・上限15,000円）
@@ -458,37 +415,21 @@
     </div>
 
     <div class="form-group">
-      <label for="childOver16">扶養親族（16歳以上・満22歳まで）の人数</label>
+      <label for="childOver16">子供（16歳以上）の人数</label>
       <input type="number" id="childOver16" min="0" max="10" value="0">
       <div class="info-box">16歳以上：10,000円 × 人数</div>
     </div>
 
     <div class="form-group">
-      <label for="childUnder16">扶養親族（16歳未満）の人数</label>
+      <label for="childUnder16">子供（16歳未満）の人数</label>
       <input type="number" id="childUnder16" min="0" max="10" value="0">
       <div class="info-box">16歳未満：5,000円 × 人数</div>
-    </div>
-
-    <div class="form-group">
-      <label>配偶者なし職員の扶養親族（1名まで）</label>
-      <label class="checkbox-item" style="display:flex;">
-        <input type="checkbox" id="spouseless_dep">
-        <span>該当あり（+11,000円）
-          <span style="font-size:0.78rem; color:#888; display:block;">配偶者のいない職員の最初の扶養親族1名</span>
-        </span>
-      </label>
-    </div>
-
-    <div class="form-group">
-      <label for="otherDep">その他扶養親族の人数</label>
-      <input type="number" id="otherDep" min="0" max="10" value="0">
-      <div class="info-box">その他：1,500円 × 人数</div>
     </div>
   </div>
 
   <!-- ⑤ 交通費 -->
   <div class="card">
-    <h2>⑤ 交通費</h2>
+    <h2>⑤ 通勤手当（規定に準ずる）</h2>
 
     <div class="form-group">
       <label for="transportType">通勤手段</label>
@@ -557,15 +498,15 @@
         <span class="key">基礎月給</span>
         <span class="val" id="br-base">¥0</span>
       </div>
-      <div class="breakdown-row">
-        <span class="key">ベースアップ手当（自動適用）</span>
-        <span class="val baseup" id="br-baseup">+¥0</span>
-      </div>
-      <div class="breakdown-row">
+      <div class="breakdown-row" id="br-exp-row">
         <span class="key">経験加算</span>
         <span class="val plus" id="br-exp">+¥0</span>
       </div>
-      <div class="breakdown-row">
+      <div class="breakdown-row" id="br-baseup-row">
+        <span class="key">ベースアップ手当（自動適用）</span>
+        <span class="val baseup" id="br-baseup">+¥0</span>
+      </div>
+      <div class="breakdown-row" id="br-qual-row">
         <span class="key">資格手当</span>
         <span class="val plus" id="br-qual">+¥0</span>
       </div>
@@ -581,12 +522,12 @@
         <span class="key">住居手当</span>
         <span class="val plus" id="br-jukyo" style="color:#2980b9;">α（上限15,000円）</span>
       </div>
-      <div class="breakdown-row">
+      <div class="breakdown-row" id="br-fuyo-row">
         <span class="key">扶養手当</span>
         <span class="val plus" id="br-fuyo">+¥0</span>
       </div>
       <div class="breakdown-row">
-        <span class="key">交通費</span>
+        <span class="key">通勤手当</span>
         <span class="val transport" id="br-transport">+¥0</span>
       </div>
       <div class="breakdown-row total-row">
@@ -599,8 +540,12 @@
       </div>
       <div class="breakdown-row" id="br-special-row" style="display:none;">
         <span class="key" style="color:#999;">特別手当（参考）</span>
-        <span class="val" style="color:#999; font-size:0.85rem;">3,000円〜3,500円 × 日数（12/31〜1/2出勤・入所施設のみ）</span>
+        <span class="val" style="color:#999; font-size:0.85rem;">3,000円〜3,500円 × 日数（入所施設等）</span>
       </div>
+    </div>
+
+    <div class="note-box" id="yakinNote" style="display:none;">
+      夜勤専従の基礎額は「賞与なし・住居手当・通勤手当以外の手当を含む金額」です。そのため経験加算・資格手当・各種手当は重複計上せず、住居手当（α）と通勤手当のみ加算しています。
     </div>
 
     <div class="range-note" id="rangeNote"></div>
@@ -613,48 +558,50 @@
 
 <script>
   const BASE_SALARY = {
-    direct_nyusho:     191100,
-    direct_tusho:      185900,
-    direct_jido:       185900,
-    junkangofu:        192500,
-    kangofu:           205000,
-    rehab:             200000,
-    caremanager:       220000,
-    service_manager:   228000,
-    childdev_manager:  230000,
-    soudan_specialist: 200000,
-    soudan_general:    181400,
-    career:            225000,
-    jimu_general:      181400,
-    jimu_keiri:        187200,
-    kanrieiyoshi:      181400,
-    eiyoshi:           181400,
+    nyusho:       184400,
+    nicchu:       179800,
+    jido:         179800,
+    driver:       171200,
+    junkangofu_q: 192200,
+    junkangofu_nq:187200,
+    kango_rehab:  197200,
+    shika:        197200,
+    bldg:         178800,
+    onsen:        176200,
+    jimu:         176200,
+    eiyoshi:      176200,
+    soudan:       176200,
+    yakin_kaigo:  280000,
+    yakin_bldg:   260000,
   };
 
   // ベースアップ手当区分
   const JOB_CATEGORY = {
-    direct_nyusho: 'direct', direct_tusho: 'direct', direct_jido: 'direct',
-    junkangofu: 'direct',
-    kangofu: 'nursing_rehab', rehab: 'nursing_rehab', caremanager: 'nursing_rehab',
-    service_manager: 'nursing_rehab', childdev_manager: 'nursing_rehab',
-    soudan_specialist: 'nursing_rehab',
-    soudan_general: 'indirect', career: 'indirect', jimu_general: 'indirect',
-    jimu_keiri: 'indirect', kanrieiyoshi: 'indirect', eiyoshi: 'indirect',
+    nyusho: 'direct', nicchu: 'direct', jido: 'direct', driver: 'direct',
+    junkangofu_q: 'direct', junkangofu_nq: 'direct', shika: 'direct',
+    bldg: 'direct', onsen: 'direct',
+    kango_rehab: 'nursing_rehab',
+    jimu: 'indirect', eiyoshi: 'indirect', soudan: 'indirect',
+    yakin_kaigo: 'yakin', yakin_bldg: 'yakin',
   };
 
-  const BASEUP = { direct: 19000, nursing_rehab: 10000, indirect: 8000 };
+  // ベースアップ手当（直接処遇=16,000。間接処遇・看護リハビリは査定表に明記なく直接処遇と同額で仮置き）
+  const BASEUP = { direct: 16000, nursing_rehab: 16000, indirect: 16000, yakin: 0 };
 
-  // 経験加算：月額 × 年数（同種他企業経験、上限10年）
-  const EXP_PER_YEAR = { direct: 1000, nursing_rehab: 2000, indirect: 1000 };
-
-  // 10年以上ボーナス
-  const TEN_YEAR_BONUS = { direct: 300, nursing_rehab: 100, indirect: 100 };
+  // 職種ごとの注記
+  const JOB_NOTE = {
+    kango_rehab: '基礎月給は197,200円〜220,000円のレンジです。本欄は下限の197,200円で計算しています。実額に応じて調整してください。',
+    bldg: '基礎月給は178,800円〜195,000円のレンジです。本欄は下限の178,800円で計算しています。実額に応じて調整してください。',
+    yakin_kaigo: '夜勤専従（介護）の基礎額280,000円は住居・通勤手当以外の手当を含む金額です。経験加算・資格手当等は加算されません。',
+    yakin_bldg: '夜勤専従（ビル）の基礎額260,000円は住居・通勤手当以外の手当を含む金額です。経験加算・資格手当等は加算されません。',
+  };
 
   function onJobChange() {
     const job = document.getElementById('jobType').value;
-    const isTusho  = ['direct_tusho', 'direct_jido'].includes(job);
-    document.getElementById('henso-section').classList.remove('hidden');
-    document.getElementById('sougei-section').classList.toggle('hidden', !isTusho);
+    const note = JOB_NOTE[job];
+    const box = document.getElementById('job-note');
+    if (note) { box.textContent = note; box.style.display = ''; }
+    else { box.style.display = 'none'; }
   }
 
   function onTransportChange() {
@@ -686,48 +633,46 @@
 
     const cat       = JOB_CATEGORY[job];
     const base      = BASE_SALARY[job];
-    const baseup    = BASEUP[cat];
+    const isYakin   = cat === 'yakin';
+
     const expYears  = Math.min(parseInt(document.getElementById('expYears').value) || 0, 10);
     const totalExp  = parseInt(document.getElementById('totalExpYears').value) || 0;
-
-    // 経験加算
-    const selectedRate = parseInt(document.querySelector('input[name="expRate"]:checked').value) || 1000;
-    let expBonus    = selectedRate * expYears;
-    if (totalExp >= 10) expBonus += TEN_YEAR_BONUS[cat];
-    if (document.getElementById('exp_hospital').checked) expBonus += 100 * expYears;
-    if (document.getElementById('exp_shogai').checked)   expBonus += 100 * expYears;
-    const rawLeader = parseInt(document.getElementById('leaderBonus').value) || 0;
-    // 看護・リハビリは上限700円
-    const leaderBonus = (cat === 'nursing_rehab') ? Math.min(rawLeader, 700) : rawLeader;
-    expBonus += leaderBonus;
-
-    // 資格手当
-    let qualBonus = 0;
-    document.querySelectorAll('[data-qual]:checked').forEach(cb => {
-      qualBonus += parseInt(cb.dataset.qual) || 0;
-    });
-
-    // 各種手当
-    const henso   = parseInt(document.getElementById('hensokin').value) || 0;
-    const sougei  = parseInt(document.getElementById('sougei').value) || 0;
     const jukyoFlag = document.getElementById('jukyo_flag').checked;
-    const spouse       = parseInt(document.getElementById('spouse').value) || 0;
-    const childO       = (parseInt(document.getElementById('childOver16').value) || 0) * 10000;
-    const childU       = (parseInt(document.getElementById('childUnder16').value) || 0) * 5000;
-    const spouselessDep = document.getElementById('spouseless_dep').checked ? 11000 : 0;
-    const otherDep     = (parseInt(document.getElementById('otherDep').value) || 0) * 1500;
-    const fuyo         = spouse + childO + childU + spouselessDep + otherDep;
     const transport = getTransportAmount();
 
-    const total = base + baseup + expBonus + qualBonus
-                + henso + sougei + fuyo + transport;
+    let baseup = 0, expBonus = 0, qualBonus = 0, henso = 0, sougei = 0, fuyo = 0;
 
-    const isNyusho = ['direct_nyusho', 'junkangofu', 'service_manager', 'childdev_manager'].includes(job);
-    const isTusho  = ['direct_tusho', 'direct_jido'].includes(job);
+    if (!isYakin) {
+      baseup = BASEUP[cat];
+
+      // 経験加算：年加算金額（積み上げ）× 同種経験年数（上限10年）
+      let perYear = 1000;                                 // 基本
+      if (totalExp >= 10) perYear += 300;                 // 介護職・通算10年以上
+      if (document.getElementById('exp_kaigo').checked)  perYear += 100;  // 介護分野経験
+      if (document.getElementById('exp_shogai').checked) perYear += 100;  // 障がい分野経験
+      perYear += parseInt(document.getElementById('leaderBonus').value) || 0; // リーダー経験
+      perYear = Math.min(perYear, 2500);                  // 上限2,500円/年
+      expBonus = perYear * expYears;
+
+      // 資格手当
+      document.querySelectorAll('[data-qual]:checked').forEach(cb => {
+        qualBonus += parseInt(cb.dataset.qual) || 0;
+      });
+
+      // 各種手当
+      henso  = parseInt(document.getElementById('hensokin').value) || 0;
+      sougei = parseInt(document.getElementById('sougei').value) || 0;
+      const spouse = parseInt(document.getElementById('spouse').value) || 0;
+      const childO = (parseInt(document.getElementById('childOver16').value) || 0) * 10000;
+      const childU = (parseInt(document.getElementById('childUnder16').value) || 0) * 5000;
+      fuyo = spouse + childO + childU;
+    }
+
+    const total = base + baseup + expBonus + qualBonus + henso + sougei + fuyo + transport;
 
     document.getElementById('br-base').textContent      = fmt(base);
-    document.getElementById('br-baseup').textContent    = '+' + fmt(baseup);
     document.getElementById('br-exp').textContent       = '+' + fmt(expBonus);
+    document.getElementById('br-baseup').textContent    = '+' + fmt(baseup);
     document.getElementById('br-qual').textContent      = '+' + fmt(qualBonus);
     document.getElementById('br-henso').textContent     = '+' + fmt(henso);
     document.getElementById('br-sougei').textContent    = '+' + fmt(sougei);
@@ -736,16 +681,21 @@
     document.getElementById('br-jukyo-row').style.display = jukyoFlag ? '' : 'none';
     document.getElementById('br-total').textContent     = fmt(total) + (jukyoFlag ? ' ＋ α' : '');
     document.getElementById('totalAmount').textContent  = fmt(total) + (jukyoFlag ? ' ＋ α' : '');
-    document.getElementById('br-henso-row').style.display  = '';
-    document.getElementById('br-sougei-row').style.display = isTusho  ? '' : 'none';
-    document.getElementById('br-yako-row').style.display   = isNyusho ? '' : 'none';
-    document.getElementById('br-special-row').style.display = isNyusho ? '' : 'none';
+
+    // 夜勤専従は重複計上を避けるため加算行を非表示
+    ['br-exp-row','br-baseup-row','br-qual-row','br-henso-row','br-sougei-row','br-fuyo-row'].forEach(id => {
+      document.getElementById(id).style.display = isYakin ? 'none' : '';
+    });
+    document.getElementById('yakinNote').style.display = isYakin ? '' : 'none';
+    document.getElementById('br-yako-row').style.display   = isYakin ? '' : 'none';
+    document.getElementById('br-special-row').style.display = isYakin ? '' : 'none';
 
     const low  = fmt(Math.round(total * 0.95));
     const high = fmt(Math.round(total * 1.08));
     document.getElementById('rangeNote').innerHTML =
       `<strong>提示レンジ目安：</strong>${low} 〜 ${high}<br>` +
-      `<span style="font-size:0.8rem;">※本人のスキル・面接評価・施設規模・加算状況により±5〜8%の調整を推奨します。</span>`;
+      `<span style="font-size:0.8rem;">※本人のスキル・面接評価・施設規模・加算状況により±5〜8%の調整を推奨します。</span><br>` +
+      `<span style="font-size:0.8rem;">※法人独自退職金制度は出勤率95%以上かつ人事考課に準ずる。</span>`;
 
     document.getElementById('result').style.display = 'block';
     document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
