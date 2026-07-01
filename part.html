@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>令和8年度 パートタイム職員 時給査定システム</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 32px; }
+    header h1 { font-size: 1.6rem; font-weight: 700; color: #1a5276; }
+    header p { color: #666; font-size: 0.9rem; margin-top: 6px; }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a5276;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #d6eaf8;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    select, input[type="number"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: #fafafa;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:focus, input[type="number"]:focus {
+      border-color: #2980b9;
+      background: #fff;
+    }
+
+    .checkboxes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .checkbox-item:hover { background: #eaf4fd; }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      accent-color: #2980b9;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-item span { font-size: 0.88rem; line-height: 1.4; }
+    .checkbox-item .amount { font-size: 0.78rem; color: #2980b9; display: block; }
+
+    .transport-detail { display: none; margin-top: 16px; }
+    .transport-detail.active { display: block; }
+
+    .transport-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .info-box {
+      background: #eaf4fd;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: #1a5276;
+      margin-top: 10px;
+    }
+
+    .note-box {
+      background: #fef5e7;
+      border: 1px solid #f8d486;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.83rem;
+      color: #9c6a00;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #1a5276;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.05em;
+    }
+
+    .btn:hover { background: #154360; }
+
+    .btn-reset {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 11px;
+      background: #fff;
+      color: #1a5276;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 2px solid #1a5276;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-reset:hover { background: #eaf4fd; }
+
+    #result { display: none; }
+
+    .result-total {
+      text-align: center;
+      padding: 24px 0 20px;
+    }
+
+    .result-total .label { font-size: 0.9rem; color: #666; margin-bottom: 8px; }
+    .result-total .amount { font-size: 2.6rem; font-weight: 800; color: #1a5276; }
+    .result-total .sub { font-size: 0.85rem; color: #888; margin-top: 4px; }
+
+    .result-sub-total {
+      text-align: center;
+      padding: 12px 0 16px;
+      border-top: 1px dashed #eee;
+      margin-top: 4px;
+    }
+
+    .result-sub-total .label { font-size: 0.85rem; color: #888; margin-bottom: 4px; }
+    .result-sub-total .amount { font-size: 1.6rem; font-weight: 700; color: #555; }
+
+    .breakdown {
+      border-top: 1px solid #eee;
+      margin-top: 20px;
+      padding-top: 16px;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px dashed #eee;
+      font-size: 0.9rem;
+    }
+
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-row .key { color: #555; }
+    .breakdown-row .val { font-weight: 600; color: #222; }
+    .breakdown-row .val.plus { color: #1a8c4e; }
+    .breakdown-row .val.transport { color: #7d3c98; }
+    .breakdown-row.total-row { font-weight: 700; font-size: 1rem; }
+    .breakdown-row.monthly-row { font-weight: 700; font-size: 0.95rem; color: #1a5276; }
+
+    .range-note {
+      background: #fef9e7;
+      border: 1px solid #f9e79f;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #7d6608;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .btn, .btn-reset { display: none; }
+      .card { box-shadow: none; border: 1px solid #ddd; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>令和8年度 パートタイム職員 時給査定システム</h1>
+    <p>放課後等デイサービス｜パートタイム職員 時給査定</p>
+    <a href="index.html" style="display:inline-block; margin-top:12px; padding:7px 18px; background:#eaf4fd; color:#1a5276; border:1px solid #aed6f1; border-radius:20px; font-size:0.82rem; font-weight:600; text-decoration:none;">→ 契約職員 月給査定はこちら</a>
+  </header>
+
+  <!-- ① 基本情報 -->
+  <div class="card">
+    <h2>① 基本情報</h2>
+
+    <div class="form-group">
+      <label for="jobType">職種</label>
+      <select id="jobType">
+        <option value="">選択してください</option>
+        <optgroup label="支援員">
+          <option value="shien">支援員（1,050円）</option>
+          <option value="shien_hoiku">支援員・保育士有資格（1,150円）</option>
+          <option value="shien_kyoin">支援員・教諭免許所持（1,150円）</option>
+        </optgroup>
+        <optgroup label="送迎ドライバー">
+          <option value="driver_shien">送迎ドライバー兼支援員（1,100円）</option>
+          <option value="driver">送迎専従ドライバー（1,000円）</option>
+        </optgroup>
+        <optgroup label="その他">
+          <option value="jimu">事務補助（1,000円）</option>
+          <option value="cleaning">清掃・施設補助（950円）</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="workHours">月間勤務時間の目安（時間）</label>
+      <input type="number" id="workHours" min="1" max="160" value="80" placeholder="例：80">
+      <div class="info-box">月収目安 ＝ 時給 × 月間勤務時間（通勤手当は別途）</div>
+    </div>
+  </div>
+
+  <!-- ② 経験加算 -->
+  <div class="card">
+    <h2>② 経験の詳細（時給加算）</h2>
+    <p style="font-size:0.82rem; color:#888; margin-bottom:12px;">基本 5円/年 を起点に、該当項目を加算（上限 8円/年）。時給加算額 × 同職種経験年数（上限5年）で算出します。</p>
+
+    <div class="form-group">
+      <label for="expYears">同職種の経験年数（上限5年）</label>
+      <input type="number" id="expYears" min="0" max="5" value="0" placeholder="0">
+    </div>
+
+    <div class="checkboxes">
+      <label class="checkbox-item">
+        <input type="checkbox" id="exp_jido">
+        <span>児童支援・保育分野の経験あり<span class="amount">+2円 / 年</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" id="exp_shogai">
+        <span>障がい福祉分野の経験あり<span class="amount">+1円 / 年</span></span>
+      </label>
+    </div>
+
+    <div class="info-box" style="margin-top:12px;">時給加算の上限は +40円/時 です。</div>
+  </div>
+
+  <!-- ③ 保有資格 -->
+  <div class="card">
+    <h2>③ 保有資格（該当するものすべて選択）</h2>
+    <p style="font-size:0.82rem; color:#888; margin-bottom:12px;">※業務に関連する資格のみ適用</p>
+    <div class="checkboxes">
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="50">
+        <span>保育士<span class="amount">時給+50円</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="50">
+        <span>教諭免許（幼・小・中・高）<span class="amount">時給+50円</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="50">
+        <span>社会福祉士<span class="amount">時給+50円</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="50">
+        <span>精神保健福祉士<span class="amount">時給+50円</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="30">
+        <span>児童指導員任用資格<span class="amount">時給+30円</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="30">
+        <span>介護福祉士<span class="amount">時給+30円</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="20">
+        <span>実務者研修<span class="amount">時給+20円</span></span>
+      </label>
+      <label class="checkbox-item">
+        <input type="checkbox" data-qual="15">
+        <span>初任者研修<span class="amount">時給+15円</span></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- ④ 通勤手当 -->
+  <div class="card">
+    <h2>④ 通勤手当（規定に準ずる）</h2>
+
+    <div class="form-group">
+      <label for="transportType">通勤手段</label>
+      <select id="transportType" onchange="onTransportChange()">
+        <option value="none">徒歩・自転車（交通費支給なし）</option>
+        <option value="transit">電車・バス</option>
+        <option value="car">車（距離区分）</option>
+        <option value="bike">バイク（車の半額）</option>
+      </select>
+    </div>
+
+    <div id="transport-transit" class="transport-detail">
+      <div class="transport-row">
+        <div class="form-group">
+          <label for="transitCost">月額実費（円）</label>
+          <input type="number" id="transitCost" min="0" max="100000" value="0" placeholder="例：5000">
+        </div>
+        <div class="form-group">
+          <label for="transitCap">支給上限</label>
+          <select id="transitCap">
+            <option value="10000">10,000円</option>
+            <option value="15000" selected>15,000円</option>
+            <option value="20000">20,000円</option>
+            <option value="999999">上限なし（実費全額）</option>
+          </select>
+        </div>
+      </div>
+      <div class="info-box">支給額 ＝ 月額実費と上限の低い方</div>
+    </div>
+
+    <div id="transport-car" class="transport-detail">
+      <div class="form-group">
+        <label for="carDistance">通勤距離</label>
+        <select id="carDistance">
+          <option value="0">片道2km未満（支給なし）</option>
+          <option value="2100">片道2km〜5km未満（2,100円/月）</option>
+          <option value="4200">片道5km〜10km未満（4,200円/月）</option>
+          <option value="7100">片道10km〜15km未満（7,100円/月）</option>
+          <option value="10000">片道15km〜20km未満（10,000円/月）</option>
+          <option value="12900">片道20km〜25km未満（12,900円/月）</option>
+          <option value="15800">片道25km〜30km未満（15,800円/月）</option>
+        </select>
+      </div>
+      <div class="info-box">片道距離で選択してください。バイクは上記の半額を支給。</div>
+    </div>
+  </div>
+
+  <button class="btn" onclick="calculate()">時給を算出する</button>
+
+  <!-- 結果エリア -->
+  <div class="card" id="result">
+    <h2>算出結果</h2>
+
+    <div class="result-total">
+      <div class="label">採用時 時給目安</div>
+      <div class="amount" id="totalHourly">¥0</div>
+      <div class="sub">時給ベース（通勤手当除く）</div>
+    </div>
+
+    <div class="result-sub-total">
+      <div class="label">月収目安（時給 × 月間勤務時間）</div>
+      <div class="amount" id="monthlyEstimate">¥0</div>
+    </div>
+
+    <div class="breakdown">
+      <div class="breakdown-row">
+        <span class="key">基礎時給</span>
+        <span class="val" id="br-base">¥0</span>
+      </div>
+      <div class="breakdown-row" id="br-exp-row">
+        <span class="key">経験加算</span>
+        <span class="val plus" id="br-exp">+¥0</span>
+      </div>
+      <div class="breakdown-row" id="br-qual-row">
+        <span class="key">資格手当（時給）</span>
+        <span class="val plus" id="br-qual">+¥0</span>
+      </div>
+      <div class="breakdown-row total-row">
+        <span class="key">時給合計</span>
+        <span class="val" id="br-hourly-total">¥0</span>
+      </div>
+      <div class="breakdown-row monthly-row">
+        <span class="key">月収目安（× <span id="br-hours">0</span>時間）</span>
+        <span class="val" id="br-monthly">¥0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="key">通勤手当（月額）</span>
+        <span class="val transport" id="br-transport">+¥0</span>
+      </div>
+      <div class="breakdown-row total-row">
+        <span class="key">月収合計（目安）</span>
+        <span class="val" id="br-total">¥0</span>
+      </div>
+    </div>
+
+    <div class="range-note" id="rangeNote"></div>
+
+    <button class="btn-reset" onclick="resetForm()">再計算する</button>
+    <button class="btn" style="margin-top:12px;" onclick="window.print()">印刷・PDF保存</button>
+  </div>
+
+</div>
+
+<script>
+  const BASE_HOURLY = {
+    shien:        1050,
+    shien_hoiku:  1150,
+    shien_kyoin:  1150,
+    driver_shien: 1100,
+    driver:       1000,
+    jimu:         1000,
+    cleaning:      950,
+  };
+
+  function onTransportChange() {
+    const val = document.getElementById('transportType').value;
+    document.getElementById('transport-transit').classList.toggle('active', val === 'transit');
+    const showCar = val === 'car' || val === 'bike';
+    document.getElementById('transport-car').classList.toggle('active', showCar);
+  }
+
+  function getTransportAmount() {
+    const type = document.getElementById('transportType').value;
+    if (type === 'transit') {
+      const cost = parseInt(document.getElementById('transitCost').value) || 0;
+      const cap  = parseInt(document.getElementById('transitCap').value) || 15000;
+      return Math.min(cost, cap);
+    }
+    if (type === 'car' || type === 'bike') {
+      const base = parseInt(document.getElementById('carDistance').value) || 0;
+      return type === 'bike' ? Math.floor(base / 2) : base;
+    }
+    return 0;
+  }
+
+  function fmt(n) { return '¥' + n.toLocaleString('ja-JP'); }
+
+  function calculate() {
+    const job = document.getElementById('jobType').value;
+    if (!job) { alert('職種を選択してください'); return; }
+
+    const baseHourly = BASE_HOURLY[job];
+    const workHours  = Math.max(1, parseInt(document.getElementById('workHours').value) || 80);
+    const expYears   = Math.min(parseInt(document.getElementById('expYears').value) || 0, 5);
+    const transport  = getTransportAmount();
+
+    // 経験加算：基本5円/年 + 分野加算
+    let perYear = 5;
+    if (document.getElementById('exp_jido').checked)   perYear += 2;
+    if (document.getElementById('exp_shogai').checked) perYear += 1;
+    perYear = Math.min(perYear, 8);
+    const expBonus = Math.min(perYear * expYears, 40);
+
+    // 資格手当（時給加算）
+    let qualBonus = 0;
+    document.querySelectorAll('[data-qual]:checked').forEach(cb => {
+      qualBonus += parseInt(cb.dataset.qual) || 0;
+    });
+
+    const hourlyTotal  = baseHourly + expBonus + qualBonus;
+    const monthlyBase  = hourlyTotal * workHours;
+    const monthlyTotal = monthlyBase + transport;
+
+    document.getElementById('br-base').textContent        = fmt(baseHourly);
+    document.getElementById('br-exp').textContent         = '+¥' + expBonus.toLocaleString('ja-JP');
+    document.getElementById('br-qual').textContent        = '+¥' + qualBonus.toLocaleString('ja-JP');
+    document.getElementById('br-hourly-total').textContent = fmt(hourlyTotal);
+    document.getElementById('br-hours').textContent       = workHours;
+    document.getElementById('br-monthly').textContent     = fmt(monthlyBase);
+    document.getElementById('br-transport').textContent   = '+' + fmt(transport);
+    document.getElementById('br-total').textContent       = fmt(monthlyTotal);
+    document.getElementById('totalHourly').textContent    = fmt(hourlyTotal);
+    document.getElementById('monthlyEstimate').textContent = fmt(monthlyBase);
+
+    const low  = fmt(Math.round(hourlyTotal * 0.95));
+    const high = fmt(Math.round(hourlyTotal * 1.05));
+    document.getElementById('rangeNote').innerHTML =
+      `<strong>提示レンジ目安：</strong>${low} 〜 ${high}/時<br>` +
+      `<span style="font-size:0.8rem;">※本人のスキル・面接評価により±5%の調整を推奨します。</span><br>` +
+      `<span style="font-size:0.8rem;">※月収目安は実際の勤務時間・シフトにより変動します。</span>`;
+
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    document.getElementById('result').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
