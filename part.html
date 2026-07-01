@@ -67,37 +67,6 @@
       background: #fff;
     }
 
-    .checkboxes {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .checkbox-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-
-    .checkbox-item:hover { background: #eaf4fd; }
-
-    .checkbox-item input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      margin-top: 2px;
-      accent-color: #2980b9;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .checkbox-item span { font-size: 0.88rem; line-height: 1.4; }
-    .checkbox-item .amount { font-size: 0.78rem; color: #2980b9; display: block; }
-
     .transport-detail { display: none; margin-top: 16px; }
     .transport-detail.active { display: block; }
 
@@ -114,17 +83,6 @@
       font-size: 0.85rem;
       color: #1a5276;
       margin-top: 10px;
-    }
-
-    .note-box {
-      background: #fef5e7;
-      border: 1px solid #f8d486;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 0.83rem;
-      color: #9c6a00;
-      margin-top: 12px;
-      line-height: 1.5;
     }
 
     .btn {
@@ -202,6 +160,7 @@
     .breakdown-row .val { font-weight: 600; color: #222; }
     .breakdown-row .val.plus { color: #1a8c4e; }
     .breakdown-row .val.transport { color: #7d3c98; }
+    .breakdown-row .val.baseup { color: #c0392b; }
     .breakdown-row.total-row { font-weight: 700; font-size: 1rem; }
     .breakdown-row.monthly-row { font-weight: 700; font-size: 0.95rem; color: #1a5276; }
 
@@ -228,108 +187,57 @@
 
   <header>
     <h1>令和8年度 パートタイム職員 時給査定システム</h1>
-    <p>放課後等デイサービス｜パートタイム職員 時給査定</p>
+    <p>パートタイム職員 時給査定（経験加算なし）</p>
     <a href="index.html" style="display:inline-block; margin-top:12px; padding:7px 18px; background:#eaf4fd; color:#1a5276; border:1px solid #aed6f1; border-radius:20px; font-size:0.82rem; font-weight:600; text-decoration:none;">→ 契約職員 月給査定はこちら</a>
   </header>
 
   <!-- ① 基本情報 -->
   <div class="card">
-    <h2>① 基本情報</h2>
+    <h2>① 職種・資格区分</h2>
 
     <div class="form-group">
-      <label for="jobType">職種</label>
+      <label for="jobType">職種・保有資格</label>
       <select id="jobType">
         <option value="">選択してください</option>
-        <optgroup label="支援員">
-          <option value="shien">支援員（1,050円）</option>
-          <option value="shien_hoiku">支援員・保育士有資格（1,150円）</option>
-          <option value="shien_kyoin">支援員・教諭免許所持（1,150円）</option>
+        <optgroup label="介護職員">
+          <option value="kaigo_nq">介護職員　無資格</option>
+          <option value="kaigo_shoninsha">介護職員　初任者研修</option>
+          <option value="kaigo_jitsumu">介護職員　実務者研修</option>
+          <option value="kaigo_fukushi">介護職員　介護福祉士</option>
         </optgroup>
-        <optgroup label="送迎ドライバー">
-          <option value="driver_shien">送迎ドライバー兼支援員（1,100円）</option>
-          <option value="driver">送迎専従ドライバー（1,000円）</option>
+        <optgroup label="児童系職員">
+          <option value="jido_nq">児童系職員　無資格</option>
+          <option value="jido_ninyo">児童系職員　任用資格</option>
+          <option value="jido_kyoin">児童系職員　教職免許</option>
+          <option value="jido_hoiku">児童系職員　保育士</option>
         </optgroup>
-        <optgroup label="その他">
-          <option value="jimu">事務補助（1,000円）</option>
-          <option value="cleaning">清掃・施設補助（950円）</option>
+        <optgroup label="事務系職員">
+          <option value="jimu_nq">事務系職員　未経験</option>
+          <option value="jimu_3000">事務系職員　3,000円資格</option>
+          <option value="jimu_5000">事務系職員　5,000円資格</option>
+          <option value="jimu_10000">事務系職員　10,000円資格</option>
+        </optgroup>
+        <optgroup label="専門職・その他">
+          <option value="rehab">リハビリ系職員</option>
+          <option value="nurse">看護系職員</option>
+          <option value="chori">福祉厨房調理師・世話人</option>
+          <option value="shuro_hayaoso">就労　早出遅出等可能求人</option>
+          <option value="shuro_onsen">就労　温泉清掃スタッフ・専門調理スタッフ</option>
         </optgroup>
       </select>
+      <div class="info-box" id="hourly-preview" style="display:none;"></div>
     </div>
 
     <div class="form-group">
       <label for="workHours">月間勤務時間の目安（時間）</label>
-      <input type="number" id="workHours" min="1" max="160" value="80" placeholder="例：80">
+      <input type="number" id="workHours" min="1" max="171" value="80" placeholder="例：80">
       <div class="info-box">月収目安 ＝ 時給 × 月間勤務時間（通勤手当は別途）</div>
     </div>
   </div>
 
-  <!-- ② 経験加算 -->
+  <!-- ② 通勤手当 -->
   <div class="card">
-    <h2>② 経験の詳細（時給加算）</h2>
-    <p style="font-size:0.82rem; color:#888; margin-bottom:12px;">基本 5円/年 を起点に、該当項目を加算（上限 8円/年）。時給加算額 × 同職種経験年数（上限5年）で算出します。</p>
-
-    <div class="form-group">
-      <label for="expYears">同職種の経験年数（上限5年）</label>
-      <input type="number" id="expYears" min="0" max="5" value="0" placeholder="0">
-    </div>
-
-    <div class="checkboxes">
-      <label class="checkbox-item">
-        <input type="checkbox" id="exp_jido">
-        <span>児童支援・保育分野の経験あり<span class="amount">+2円 / 年</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" id="exp_shogai">
-        <span>障がい福祉分野の経験あり<span class="amount">+1円 / 年</span></span>
-      </label>
-    </div>
-
-    <div class="info-box" style="margin-top:12px;">時給加算の上限は +40円/時 です。</div>
-  </div>
-
-  <!-- ③ 保有資格 -->
-  <div class="card">
-    <h2>③ 保有資格（該当するものすべて選択）</h2>
-    <p style="font-size:0.82rem; color:#888; margin-bottom:12px;">※業務に関連する資格のみ適用</p>
-    <div class="checkboxes">
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="50">
-        <span>保育士<span class="amount">時給+50円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="50">
-        <span>教諭免許（幼・小・中・高）<span class="amount">時給+50円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="50">
-        <span>社会福祉士<span class="amount">時給+50円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="50">
-        <span>精神保健福祉士<span class="amount">時給+50円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="30">
-        <span>児童指導員任用資格<span class="amount">時給+30円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="30">
-        <span>介護福祉士<span class="amount">時給+30円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="20">
-        <span>実務者研修<span class="amount">時給+20円</span></span>
-      </label>
-      <label class="checkbox-item">
-        <input type="checkbox" data-qual="15">
-        <span>初任者研修<span class="amount">時給+15円</span></span>
-      </label>
-    </div>
-  </div>
-
-  <!-- ④ 通勤手当 -->
-  <div class="card">
-    <h2>④ 通勤手当（規定に準ずる）</h2>
+    <h2>② 通勤手当（規定に準ずる）</h2>
 
     <div class="form-group">
       <label for="transportType">通勤手段</label>
@@ -396,16 +304,16 @@
 
     <div class="breakdown">
       <div class="breakdown-row">
-        <span class="key">基礎時給</span>
+        <span class="key">基礎給与</span>
         <span class="val" id="br-base">¥0</span>
       </div>
-      <div class="breakdown-row" id="br-exp-row">
-        <span class="key">経験加算</span>
-        <span class="val plus" id="br-exp">+¥0</span>
-      </div>
-      <div class="breakdown-row" id="br-qual-row">
-        <span class="key">資格手当（時給）</span>
+      <div class="breakdown-row">
+        <span class="key">資格手当</span>
         <span class="val plus" id="br-qual">+¥0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="key">ベースアップ手当</span>
+        <span class="val baseup" id="br-baseup">+¥0</span>
       </div>
       <div class="breakdown-row total-row">
         <span class="key">時給合計</span>
@@ -434,15 +342,45 @@
 </div>
 
 <script>
-  const BASE_HOURLY = {
-    shien:        1050,
-    shien_hoiku:  1150,
-    shien_kyoin:  1150,
-    driver_shien: 1100,
-    driver:       1000,
-    jimu:         1000,
-    cleaning:      950,
+  // 基礎給与・資格手当・ベースアップ手当（1時間あたり）
+  // ベースアップ手当は月額÷171をROUNDUPで算出
+  const roundUp = (n) => Math.ceil(n);
+
+  const JOBS = {
+    // 介護職員（ベースアップ手当：19,000÷171=112円）
+    kaigo_nq:       { base: 970,  qual: 0,                            bu: roundUp(19000/171), label: '介護職員　無資格' },
+    kaigo_shoninsha:{ base: 1000, qual: roundUp(3000/171),            bu: roundUp(19000/171), label: '介護職員　初任者研修' },
+    kaigo_jitsumu:  { base: 1000, qual: roundUp(5000/171),            bu: roundUp(19000/171), label: '介護職員　実務者研修' },
+    kaigo_fukushi:  { base: 1000, qual: roundUp(10000/171),           bu: roundUp(19000/171), label: '介護職員　介護福祉士' },
+    // 児童系職員（ベースアップ手当：19,000÷171=112円）
+    jido_nq:        { base: 970,  qual: 0,                            bu: roundUp(19000/171), label: '児童系職員　無資格' },
+    jido_ninyo:     { base: 1000, qual: roundUp(3000/171),            bu: roundUp(19000/171), label: '児童系職員　任用資格' },
+    jido_kyoin:     { base: 1000, qual: roundUp(5000/171),            bu: roundUp(19000/171), label: '児童系職員　教職免許' },
+    jido_hoiku:     { base: 1000, qual: roundUp(10000/171),           bu: roundUp(19000/171), label: '児童系職員　保育士' },
+    // 事務系職員（ベースアップ手当：8,000÷171=47円）
+    jimu_nq:        { base: 990,  qual: 0,                            bu: roundUp(8000/171),  label: '事務系職員　未経験' },
+    jimu_3000:      { base: 1000, qual: roundUp(3000/171),            bu: roundUp(8000/171),  label: '事務系職員　3,000円資格' },
+    jimu_5000:      { base: 1000, qual: roundUp(5000/171),            bu: roundUp(8000/171),  label: '事務系職員　5,000円資格' },
+    jimu_10000:     { base: 1000, qual: roundUp(10000/171),           bu: roundUp(8000/171),  label: '事務系職員　10,000円資格' },
+    // 専門職・その他（ベースアップ手当：10,000÷171=59円）
+    rehab:          { base: 1150, qual: roundUp(5000/171),            bu: roundUp(10000/171), label: 'リハビリ系職員' },
+    nurse:          { base: 1230, qual: roundUp(5000/171),            bu: roundUp(10000/171), label: '看護系職員' },
+    chori:          { base: 970,  qual: 0,                            bu: roundUp(10000/171), label: '福祉厨房調理師・世話人' },
+    shuro_hayaoso:  { base: 990,  qual: 0,                            bu: roundUp(10000/171), label: '就労　早出遅出等可能求人' },
+    shuro_onsen:    { base: 1140, qual: 0,                            bu: roundUp(10000/171), label: '就労　温泉清掃スタッフ・専門調理スタッフ' },
   };
+
+  document.getElementById('jobType').addEventListener('change', function() {
+    const job = JOBS[this.value];
+    const preview = document.getElementById('hourly-preview');
+    if (job) {
+      const total = job.base + job.qual + job.bu;
+      preview.innerHTML = `基礎給与 ${job.base}円 ＋ 資格手当 ${job.qual}円 ＋ ベースアップ手当 ${job.bu}円 ＝ <strong>${total.toLocaleString('ja-JP')}円/時</strong>`;
+      preview.style.display = '';
+    } else {
+      preview.style.display = 'none';
+    }
+  });
 
   function onTransportChange() {
     const val = document.getElementById('transportType').value;
@@ -468,34 +406,20 @@
   function fmt(n) { return '¥' + n.toLocaleString('ja-JP'); }
 
   function calculate() {
-    const job = document.getElementById('jobType').value;
-    if (!job) { alert('職種を選択してください'); return; }
+    const key = document.getElementById('jobType').value;
+    if (!key) { alert('職種・資格区分を選択してください'); return; }
 
-    const baseHourly = BASE_HOURLY[job];
+    const job        = JOBS[key];
     const workHours  = Math.max(1, parseInt(document.getElementById('workHours').value) || 80);
-    const expYears   = Math.min(parseInt(document.getElementById('expYears').value) || 0, 5);
     const transport  = getTransportAmount();
 
-    // 経験加算：基本5円/年 + 分野加算
-    let perYear = 5;
-    if (document.getElementById('exp_jido').checked)   perYear += 2;
-    if (document.getElementById('exp_shogai').checked) perYear += 1;
-    perYear = Math.min(perYear, 8);
-    const expBonus = Math.min(perYear * expYears, 40);
-
-    // 資格手当（時給加算）
-    let qualBonus = 0;
-    document.querySelectorAll('[data-qual]:checked').forEach(cb => {
-      qualBonus += parseInt(cb.dataset.qual) || 0;
-    });
-
-    const hourlyTotal  = baseHourly + expBonus + qualBonus;
+    const hourlyTotal  = job.base + job.qual + job.bu;
     const monthlyBase  = hourlyTotal * workHours;
     const monthlyTotal = monthlyBase + transport;
 
-    document.getElementById('br-base').textContent        = fmt(baseHourly);
-    document.getElementById('br-exp').textContent         = '+¥' + expBonus.toLocaleString('ja-JP');
-    document.getElementById('br-qual').textContent        = '+¥' + qualBonus.toLocaleString('ja-JP');
+    document.getElementById('br-base').textContent        = fmt(job.base);
+    document.getElementById('br-qual').textContent        = '+' + fmt(job.qual);
+    document.getElementById('br-baseup').textContent      = '+' + fmt(job.bu);
     document.getElementById('br-hourly-total').textContent = fmt(hourlyTotal);
     document.getElementById('br-hours').textContent       = workHours;
     document.getElementById('br-monthly').textContent     = fmt(monthlyBase);
